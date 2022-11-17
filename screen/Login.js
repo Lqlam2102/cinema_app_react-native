@@ -4,14 +4,15 @@
 import React, {useState} from 'react';
 import {Dimensions, ImageBackground, StatusBar} from 'react-native';
 import styled from 'styled-components/native';
-// import axios from 'axios';
+
 
 import Apis, {endpoints} from '../config/Apis';
 import {images} from '../constants';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const Login = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+const Login = ({navigation}) => {
+  const [username, setUsername] = useState('admin');
+  const [password, setPassword] = useState('admin');
   const [loading, setLoading] = useState(false);
   const login = async () => {
     setLoading(true);
@@ -32,16 +33,16 @@ const Login = () => {
           grant_type: 'password',
         });
 
-        // cookies.save("access_token", res.data.access_token)
-
-        let user = await Apis.get(endpoints['current-user'], {
-          headers: {
-            Authorization: `Bearer ${res.data.access_token}`,
-          },
-        });
-        alert('success', user);
+        // await AsyncStorage.setItem('@access_token', res.data.access_token);
+        // const access_token = await AsyncStorage.getItem('@access_token');
+        // let user = await Apis.get(endpoints['current-user'], {
+        //   headers: {
+        //     Authorization: `Bearer ${access_token}`,
+        //   },
+        // });
+        // await AsyncStorage.setItem('@user', res.data.access_token);
         setLoading(false);
-        // cookies.save("user", user.data)
+        navigation.replace('UITab');
       } catch (err) {
         console.log(err.message);
         if (err.message === 'Network Error') {
@@ -66,25 +67,27 @@ const Login = () => {
           <Overlay>
             <FormWrapper>
               <Form>
-                <SignInText>Sign In</SignInText>
+                <SignInText>Đăng nhập</SignInText>
                 <Input
-                  placeholder="Enter your username"
+                  placeholder="Tên đăng nhập"
                   placeholderTextColor="grey"
                   value={username}
                   onChangeText={text => setUsername(text)}
                 />
                 <Input
-                  placeholder="Password"
+                  placeholder="Mật khẩu"
                   placeholderTextColor="grey"
                   secureTextEntry
                   value={password}
                   onChangeText={text => setPassword(text)}
                 />
                 <SubmitForm onPress={login} disabled={loading}>
-                  <ButtonText>{loading ? 'Loading...' : 'Sign In'}</ButtonText>
+                  <ButtonText>{loading ? 'Loading...' : 'Đăng nhập'}</ButtonText>
                 </SubmitForm>
-                <NewToNetflixTextWrapper activeOpacity={0.5} onPress={() => {}}>
-                  <NewToNetflix>New to App Cinema ? Sign Up</NewToNetflix>
+                <NewToNetflixTextWrapper
+                  activeOpacity={0.5}
+                  onPress={() => navigation.navigate('Register')}>
+                  <NewToNetflix>Chưa có tài khoản? Đăng ký ngay</NewToNetflix>
                 </NewToNetflixTextWrapper>
               </Form>
             </FormWrapper>

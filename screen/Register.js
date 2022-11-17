@@ -1,5 +1,6 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-undef */
+/* eslint-disable no-alert */
 /* eslint-disable prettier/prettier */
 import React, {useState} from 'react';
 
@@ -11,6 +12,7 @@ import {
 } from 'react-native';
 import styled from 'styled-components/native';
 import {images} from '../constants';
+import Apis, {endpoints} from '../config/Apis';
 
 // import Header from "../components/Header";
 
@@ -19,16 +21,67 @@ const Register = ({navigation}) => {
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [passwordAgain, setPasswordAgain] = useState('');
   const [loading, setLoading] = useState(false);
-
-  const register = () => {
+  var format = /^[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]*$/;
+  const register = async () => {
     setLoading(true);
     if (!email || !password || !firstName || !lastName) {
       alert('Không được để trống thông tin');
-      setPassword('');
-      setEmail('');
       setLoading(false);
       return;
+    }
+    else if (email.match(format)){
+      alert('Tên đăng nhập không được phép chứa ký tự đặc biệt');
+      setLoading(false);
+      return;
+    }
+    else if(email.length <= 6 ){
+      alert('Tên đăng nhập phải có ít nhất 6 ký tự');
+      setLoading(false);
+      return;
+    }
+    else if(password.length <= 6 ){
+      alert('Mật khẩu phải có ít nhất 6 ký tự');
+      setLoading(false);
+      return;
+    }
+     else if (password !== passwordAgain) {
+      alert('Mật khẩu nhập lại chưa chính xác');
+      setPasswordAgain('');
+      setLoading(false);
+      return;
+    } else {
+      return fetch('http://192.168.0.102:8000/users/', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          first_name: firstName,
+          last_name: lastName,
+          username: email,
+          password: password,
+        }),
+      })
+        .then(res => res.json())
+        .then(json => {
+          if (
+            json['username'] == 'A user with that username already exists.'
+          ) {
+            alert('Tên đăng nhập đã tồn tại.');
+          } else {
+            navigation.navigate('Login');
+            alert('Đăng ký thành công.');
+          }
+          setLoading(false);
+        })
+        .catch(error => {
+          setLoading(false);
+          alert('Đăng ký thất bại');
+          console.log(error.message);
+        });
     }
   };
 
@@ -47,45 +100,52 @@ const Register = ({navigation}) => {
             <FormWrapper>
               <Form>
                 <KeyboardAvoidingView style={{width: '100%'}}>
-                  <SignInText>Sign Up</SignInText>
+                  <SignInText>Đăng ký</SignInText>
                   <InputsWrapper>
                     <HalfInputWrapper>
                       <HalfInput
                         placeholderTextColor="grey"
-                        placeholder="First Name"
+                        placeholder="Họ tên đệm"
                         value={firstName}
                         onChangeText={text => setFirstName(text)}
                       />
                       <HalfInput
                         placeholderTextColor="grey"
-                        placeholder="Last Name"
+                        placeholder="Tên"
                         value={lastName}
                         onChangeText={text => setLastName(text)}
                       />
                     </HalfInputWrapper>
                     <Input
                       placeholderTextColor="grey"
-                      placeholder="Enter your email"
+                      placeholder="Tên tài khoản"
                       value={email}
                       onChangeText={text => setEmail(text)}
                     />
                     <Input
                       placeholderTextColor="grey"
-                      placeholder="Password"
+                      placeholder="Mật khẩu"
                       value={password}
                       secureTextEntry
                       onChangeText={text => setPassword(text)}
                     />
+                    <Input
+                      placeholderTextColor="grey"
+                      placeholder="Nhập lại mật khẩu"
+                      value={passwordAgain}
+                      secureTextEntry
+                      onChangeText={text => setPasswordAgain(text)}
+                    />
                     <SubmitForm onPress={register} disabled={loading}>
                       <ButtonText>
-                        {loading ? 'Loading...' : 'Sign Up'}
+                        {loading ? 'Loading...' : 'Đăng ký'}
                       </ButtonText>
                     </SubmitForm>
                     <NewToNetflixTextWrapper
                       activeOpacity={0.5}
                       onPress={() => navigation.navigate('Login')}>
                       <NewToNetflix>
-                        Already have an account ? Sign In
+                        Đã có tài khoản? Đăng nhập ngay
                       </NewToNetflix>
                     </NewToNetflixTextWrapper>
                   </InputsWrapper>
