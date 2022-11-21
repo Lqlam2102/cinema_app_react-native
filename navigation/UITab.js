@@ -29,7 +29,7 @@ const UITab = (props) => {
       screenOptions={screenOptions}>
       <Tab.Screen
         name="Home"
-        component={Login}
+        component={Home}
         options={{
           tabBarIcon: ({color}) => (
             IconHome(color)
@@ -38,7 +38,7 @@ const UITab = (props) => {
       />
       <Tab.Screen
         name="Coming Soon"
-        component={Register}
+        component={Home}
         options={{
           tabBarIcon: ({color}) => (
             IconVideo(color)

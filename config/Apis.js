@@ -9,7 +9,7 @@ const endpoints = {
   'register': '/users/',
 };
 const axiosRoot = axios.create({
-  baseURL: 'http://192.168.0.102:8000',
+  baseURL: 'http://192.168.1.150:8001',
 });
 export {endpoints};
 export default axiosRoot;

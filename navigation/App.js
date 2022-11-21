@@ -10,6 +10,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {Login, Register, Splash} from '../screen';
 import UITab from './UITab';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import ViewMovie from './../screen/ViewMovie';
 
 const Stack = createNativeStackNavigator();
 const screenOptions = {
@@ -41,6 +42,7 @@ const App = props => {
             gestureDirection: 'horizontal',
           }}
         />
+        <Stack.Screen name="ViewMovie" component={ViewMovie} />
         <Stack.Screen name="Splash" component={Splash} />
       </Stack.Navigator>
     </NavigationContainer>
