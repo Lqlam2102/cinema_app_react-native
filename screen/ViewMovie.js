@@ -34,7 +34,7 @@ const ViewMovie = ({navigation, route}) => {
     })
       .then(res => res.json())
       .then(json => {
-        setMovie(json.movie);
+        setMovie(json);
         setIsLoading(false);
       })
       .catch(error => {
@@ -50,100 +50,110 @@ const ViewMovie = ({navigation, route}) => {
         backgroundColor="transparent"
         barStyle="light-content"
       />
-      <Container>
-        <Header login={true} goBack={navigation.goBack}/>
-        <TagEp>{movie?.episode_current}</TagEp>
-        <Image
-          source={{
-            uri: movie?.poster_url,
-          }} // Can be a URL or a local file.
-          // isMute = {false}
-          // shouldPlay={true}
-          style={{height: height / 3, width: '100%'}}
-        />
-        <Title>{movie?.name}</Title>
-        <Title style = {{fontSize: 16, marginTop: -5}}>{movie?.origin_name}</Title>
-        <MovieSubDetails>
-          <MovieBadge>{movie?.quality}</MovieBadge>
-          <Subtitle>{movie?.lang} • {movie?.time}</Subtitle>
-        </MovieSubDetails>
-        {/* <Text style = {{color:"#fff"}}>{movie?.episode_current}</Text> */}
-        <ActionButtons>
-          <Play activeOpacity={0.5}>
-            <Ionicons name="ios-play" size={26} />
-            <TextButtonPlay>Play</TextButtonPlay>
-          </Play>
+      <View style = {{backgroundColor:'#000', flex: 1}}>
+        <Header login={true} goBack={navigation.goBack} />
+        <Container>
+          <TagEp>{movie.movie?.episode_current}</TagEp>
+          <Image
+            source={{
+              uri: movie.movie?.poster_url,
+            }} // Can be a URL or a local file.
+            // isMute = {false}
+            // shouldPlay={true}
+            style={{height: height / 3, width: '100%'}}
+          />
+          <Title>{movie.movie?.name}</Title>
+          <Title style={{fontSize: 16, marginTop: -5}}>
+            {movie.movie?.origin_name}
+          </Title>
+          <MovieSubDetails>
+            <MovieBadge>{movie.movie?.quality}</MovieBadge>
+            <Subtitle>
+              {movie.movie?.lang} • {movie.movie?.time}
+            </Subtitle>
+          </MovieSubDetails>
+          {/* <Text style = {{color:"#fff"}}>{movie?.episode_current}</Text> */}
+          <ActionButtons>
+            <Play
+              activeOpacity={0.5}
+              onPress={() => {
+                navigation.navigate('MovieFullScreen', {
+                  goBack: navigation.goBack,
+                  uri: movie.episodes[0].server_data[0].link_m3u8,
+                  thumb_url: movie.movie.thumb_url,
+                });
+              }}>
+              <Ionicons name="ios-play" size={26} />
+              <TextButtonPlay>Play</TextButtonPlay>
+            </Play>
 
-          <Download activeOpacity={0.5}>
-            <Feather
-              name="download"
-              size={24}
-              style={{color: 'white', margin: 4}}
-            />
-            <TextButtonDownload>Download</TextButtonDownload>
-          </Download>
-        </ActionButtons>
-        <ScrollView style={{height: height / 5}}>
-          <MovieDescription>
-            {movie?.content.replace('<p>', '').replace('</p>', '')}
-          </MovieDescription>
-          <Tags>
-              {
-                movie?.category.map((tag,i)=>{
-                  if (i + 1 === movie?.category.length) {
-                    return (<TagWrapper key = {i}>
-                        <Tag>{tag.name}</Tag>
-                      </TagWrapper>)
-                  }
-                  else{
-                    return (
-                      (
-                          <TagWrapper key={i}>
-                              <Tag>{tag.name}</Tag>
-                              <TagDot />
-                          </TagWrapper>
-                      )
-                  )}
-                })
-              }
-          </Tags>
-        </ScrollView>
-
+            <Download activeOpacity={0.5}>
+              <Feather
+                name="download"
+                size={24}
+                style={{color: 'white', margin: 4}}
+              />
+              <TextButtonDownload>Download</TextButtonDownload>
+            </Download>
+          </ActionButtons>
+          <ScrollView style={{height: height / 5}}>
+            <MovieDescription>
+              {movie.movie?.content.replace('<p>', '').replace('</p>', '')}
+            </MovieDescription>
+            <Tags>
+              {movie.movie?.category.map((tag, i) => {
+                if (i + 1 === movie.movie?.category.length) {
+                  return (
+                    <TagWrapper key={i}>
+                      <Tag>{tag.name}</Tag>
+                    </TagWrapper>
+                  );
+                } else {
+                  return (
+                    <TagWrapper key={i}>
+                      <Tag>{tag.name}</Tag>
+                      <TagDot />
+                    </TagWrapper>
+                  );
+                }
+              })}
+            </Tags>
+          </ScrollView>
+        </Container>
         <ActionButtons2>
-          {movie ? (
-            <ActionButton activeOpacity={0.5} onPress={() => {}}>
-              <Feather name="check" size={35} color="white" />
-              <ActionButtonLabel>My List</ActionButtonLabel>
+            {movie ? (
+              <ActionButton activeOpacity={0.5} onPress={() => {}}>
+                <Feather name="check" size={35} color="white" />
+                <ActionButtonLabel>My List</ActionButtonLabel>
+              </ActionButton>
+            ) : (
+              <ActionButton activeOpacity={0.5} onPress={() => {}}>
+                <Ionicons name="add-outline" size={35} color="white" />
+                <ActionButtonLabel>My List</ActionButtonLabel>
+              </ActionButton>
+            )}
+            <ActionButton activeOpacity={0.5}>
+              <AntDesign
+                name="like2"
+                size={30}
+                color="white"
+                style={{marginBottom: 7}}
+              />
+              <ActionButtonLabel>Rate</ActionButtonLabel>
             </ActionButton>
-          ) : (
-            <ActionButton activeOpacity={0.5} onPress={() => {}}>
-              <Ionicons name="add-outline" size={35} color="white" />
-              <ActionButtonLabel>My List</ActionButtonLabel>
+            <ActionButton activeOpacity={0.5}>
+              <AntDesign
+                name="sharealt"
+                size={27}
+                color="white"
+                style={{marginBottom: 7}}
+              />
+              <ActionButtonLabel>Share</ActionButtonLabel>
             </ActionButton>
-          )}
-          <ActionButton activeOpacity={0.5}>
-            <AntDesign
-              name="like2"
-              size={30}
-              color="white"
-              style={{marginBottom: 7}}
-            />
-            <ActionButtonLabel>Rate</ActionButtonLabel>
-          </ActionButton>
-          <ActionButton activeOpacity={0.5}>
-            <AntDesign
-              name="sharealt"
-              size={27}
-              color="white"
-              style={{marginBottom: 7}}
-            />
-            <ActionButtonLabel>Share</ActionButtonLabel>
-          </ActionButton>
-        </ActionButtons2>
-      </Container>
+          </ActionButtons2>
+      </View>
     </>
   ) : (
-    // <Lottie source={require('../assets/9103-entertainment.json')} autoPlay loop />
     <View
       style={{
         flex: 1,
@@ -151,12 +161,13 @@ const ViewMovie = ({navigation, route}) => {
         justifyContent: 'center',
         alignItems: 'center',
       }}>
-      <ActivityIndicator style={{marginTop: 60}} size="large" color="#fff" />
+      {/* <ActivityIndicator style={{marginTop: 60}} size="large" color="#fff" /> */}
+      <Lottie source={require('../assets/lf30.json')} autoPlay loop />
     </View>
   );
 };
 
-const Container = styled.View`
+const Container = styled.ScrollView`
   flex: 1;
   background-color: #000;
 `;
@@ -276,7 +287,7 @@ const TagWrapper = styled.View`
 const ActionButtons2 = styled.View`
   flex-direction: row;
   justify-content: center;
-  margin: 20px;
+  margin: 10px 10px 0 10px;
   align-items: center;
 `;
 
@@ -297,8 +308,8 @@ const TagEp = styled.Text`
   color: white;
   position: absolute;
   top: 76px;
-  z-index:999;
+  z-index: 999;
   background-color: red;
-`
+`;
 
 export default ViewMovie;
