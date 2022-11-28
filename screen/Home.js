@@ -16,6 +16,7 @@ import Hero from '../components/Hero';
 import Movies from '../components/Movies';
 import {useEffect} from 'react';
 import { movies2, movies3 } from '../constants/data';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Container = styled.ScrollView`
   flex: 1;
@@ -27,10 +28,17 @@ const Poster = styled.ImageBackground`
   height: ${(Dimensions.get('window').height * 81) / 100}px;
 `;
 
-const Home = ({navigation}) => {
+const Home = ({navigation,route}) => {
   const [movies, setMovies] = useState([]);
   const [isLoading,setIsLoading] = useState(true);
+  const user = route.params?.user;
+  // const [user, setUser] = useState(null);
   useEffect(() => {
+      // const _loadUser = async()=>{
+      //   const rs = await AsyncStorage.getItem('@user');
+      //   return rs
+      // }
+      // setUser(_loadUser())
       setIsLoading(true)
       fetch('https://ophim1.com/danh-sach/phim-moi-cap-nhat?page=1', {
         method: 'GET',
@@ -68,8 +76,8 @@ const Home = ({navigation}) => {
               'rgba(0,0,0,1)',
             ]}>
             <Header login={true} navigation={navigation} />
-            <HeaderTabs />
-            <Hero user={true} />
+            <HeaderTabs user = {user} />
+            <Hero user={user} />
           </LinearGradient>
           {/* <Header login={true} navigation={navigation} /> */}
         </Poster>
@@ -78,14 +86,17 @@ const Home = ({navigation}) => {
             <Movies
               label={'VNUF TV'}
               item={movies}
+              user={user}
             />
             <Movies
               label={'VNUF shows'}
               item={movies2}
+              user={user}
             />
             <Movies
               label={'VNUF Horror'}
               item={movies3}
+              user={user}
             />
           </React.Fragment>)
         ) : (

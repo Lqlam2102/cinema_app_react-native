@@ -2,6 +2,7 @@
 /* eslint-disable no-undef */
 /* eslint-disable prettier/prettier */
 import axios from 'axios';
+const baseURL = 'http://192.168.1.150:8000'
 const endpoints = {
   'oauth2-info': '/oauth2-info/',
   'login': '/o/token/',
@@ -9,7 +10,7 @@ const endpoints = {
   'register': '/users/',
 };
 const axiosRoot = axios.create({
-  baseURL: 'http://192.168.1.150:8000',
+  baseURL: baseURL,
 });
-export {endpoints};
+export {endpoints,baseURL};
 export default axiosRoot;

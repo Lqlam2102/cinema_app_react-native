@@ -1,4 +1,5 @@
 /* eslint-disable prettier/prettier */
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable no-unused-vars */
 /* eslint-disable quotes */
@@ -10,9 +11,10 @@ import {
   ActivityIndicator,
   StatusBar,
   StyleSheet,
-  Dimensions,
+  useWindowDimensions,
   Image,
   ScrollView,
+  Share,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import styled from 'styled-components/native';
@@ -21,13 +23,18 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
 import Header from '../components/Header';
 import Lottie from 'lottie-react-native';
+import {baseURL} from '../config/Apis';
 
 // import Video from 'react-native-video';
 
 const ViewMovie = ({navigation, route}) => {
-  const {width, height} = Dimensions.get('screen');
+  const { height, width } = useWindowDimensions();
   const [isLoading, setIsLoading] = useState(true);
+  const [inList, setInList] = useState(false);
   const [movie, setMovie] = useState(null);
+  const [response, setResponse] = useState(false);
+  const user = route.params?.user;
+  const setInListHome = route.params?.setInList;
   useEffect(() => {
     fetch(`https://ophim1.com/phim/${route.params.slug}`, {
       method: 'GET',
@@ -42,7 +49,79 @@ const ViewMovie = ({navigation, route}) => {
         alert('Tải dữ liệu thất bại');
         console.log(error.message);
       });
-  }, [route]);
+    fetch(`${baseURL}/favorite?q=${route.params.slug}`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${user}`,
+      },
+    })
+      .then(res => res.json())
+      .then(json => {
+        if (json.length > 0) {
+          setResponse(json[0]);
+          setInList(true);
+        }
+      })
+      .catch(error => {
+        console.log(error.message);
+      });
+  }, []);
+  const setMyList = async () => {
+    setInList(!inList);
+    try {
+      setInListHome(!inList);
+    } catch (err) {}
+    if (inList) {
+      fetch(`${baseURL}/favorite/${response.id}/`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${user}`,
+        },
+      })
+        .then(res => res.json())
+        .then(json => {})
+        .catch(error => {
+          console.log(error.message);
+        });
+    } else {
+      fetch(`${baseURL}/favorite/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${user}`,
+        },
+        body: JSON.stringify({
+          slug: route.params.slug,
+          data: movie,
+        }),
+      })
+        .then(res => res.json())
+        .then(json => {
+          setResponse(json);
+        })
+        .catch(error => {
+          console.log(error.message);
+        });
+    }
+  };
+  const onShare = async () => {
+    try {
+      const result = await Share.share({
+        message: `Xem phim ${movie.movie?.name} đi, đảm bảo hay luôn. Link phim: ${movie.episodes[0]?.server_data[0]?.link_embed}`,
+      });
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // shared with activity type of result.activityType
+        } else {
+          // shared
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // dismissed
+      }
+    } catch (error) {
+      alert(error.message);
+    }
+  };
   return !isLoading ? (
     <>
       <StatusBar
@@ -50,7 +129,7 @@ const ViewMovie = ({navigation, route}) => {
         backgroundColor="transparent"
         barStyle="light-content"
       />
-      <View style = {{backgroundColor:'#000', flex: 1}}>
+      <View style={{backgroundColor: '#000', flex: 1}}>
         <Header login={true} goBack={navigation.goBack} />
         <Container>
           <TagEp>{movie.movie?.episode_current}</TagEp>
@@ -78,9 +157,10 @@ const ViewMovie = ({navigation, route}) => {
               activeOpacity={0.5}
               onPress={() => {
                 navigation.navigate('MovieFullScreen', {
-                  goBack: navigation.goBack,
                   uri: movie.episodes[0].server_data[0].link_m3u8,
                   thumb_url: movie.movie.thumb_url,
+                  slug: route.params.slug,
+                  user: user,
                 });
               }}>
               <Ionicons name="ios-play" size={26} />
@@ -121,36 +201,36 @@ const ViewMovie = ({navigation, route}) => {
           </ScrollView>
         </Container>
         <ActionButtons2>
-            {movie ? (
-              <ActionButton activeOpacity={0.5} onPress={() => {}}>
-                <Feather name="check" size={35} color="white" />
-                <ActionButtonLabel>My List</ActionButtonLabel>
-              </ActionButton>
-            ) : (
-              <ActionButton activeOpacity={0.5} onPress={() => {}}>
-                <Ionicons name="add-outline" size={35} color="white" />
-                <ActionButtonLabel>My List</ActionButtonLabel>
-              </ActionButton>
-            )}
-            <ActionButton activeOpacity={0.5}>
-              <AntDesign
-                name="like2"
-                size={30}
-                color="white"
-                style={{marginBottom: 7}}
-              />
-              <ActionButtonLabel>Rate</ActionButtonLabel>
+          {inList ? (
+            <ActionButton activeOpacity={0.5} onPress={setMyList}>
+              <Feather name="check" size={35} color="white" />
+              <ActionButtonLabel>My List</ActionButtonLabel>
             </ActionButton>
-            <ActionButton activeOpacity={0.5}>
-              <AntDesign
-                name="sharealt"
-                size={27}
-                color="white"
-                style={{marginBottom: 7}}
-              />
-              <ActionButtonLabel>Share</ActionButtonLabel>
+          ) : (
+            <ActionButton activeOpacity={0.5} onPress={setMyList}>
+              <Ionicons name="add-outline" size={35} color="white" />
+              <ActionButtonLabel>My List</ActionButtonLabel>
             </ActionButton>
-          </ActionButtons2>
+          )}
+          <ActionButton activeOpacity={0.5}>
+            <AntDesign
+              name="like2"
+              size={30}
+              color="white"
+              style={{marginBottom: 7}}
+            />
+            <ActionButtonLabel>Rate</ActionButtonLabel>
+          </ActionButton>
+          <ActionButton activeOpacity={0.5} onPress={onShare}>
+            <AntDesign
+              name="sharealt"
+              size={27}
+              color="white"
+              style={{marginBottom: 7}}
+            />
+            <ActionButtonLabel>Share</ActionButtonLabel>
+          </ActionButton>
+        </ActionButtons2>
       </View>
     </>
   ) : (
@@ -307,7 +387,7 @@ const ActionButtonLabel = styled.Text`
 const TagEp = styled.Text`
   color: white;
   position: absolute;
-  top: 76px;
+  top: 0px;
   z-index: 999;
   background-color: red;
 `;

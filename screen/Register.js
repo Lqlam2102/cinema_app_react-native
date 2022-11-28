@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import styled from 'styled-components/native';
 import {images} from '../constants';
-import Apis, {endpoints} from '../config/Apis';
+import {baseURL} from '../config/Apis';
 
 // import Header from "../components/Header";
 
@@ -36,7 +36,7 @@ const Register = ({navigation}) => {
       setLoading(false);
       return;
     }
-    else if(email.length <= 6 ){
+    else if(email.length < 6 ){
       alert('Tên đăng nhập phải có ít nhất 6 ký tự');
       setLoading(false);
       return;
@@ -52,7 +52,7 @@ const Register = ({navigation}) => {
       setLoading(false);
       return;
     } else {
-      return fetch('http://192.168.0.102:8000/users/', {
+      return fetch(`${baseURL}/users/`, {
         method: 'POST',
         headers: {
           Accept: 'application/json',

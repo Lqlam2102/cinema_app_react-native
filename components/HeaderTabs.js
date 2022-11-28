@@ -4,7 +4,7 @@
 /* eslint-disable eol-last */
 
 import React from "react";
-import { Dimensions, TouchableOpacity } from "react-native";
+import {TouchableOpacity } from "react-native";
 
 import styled from "styled-components/native";
 import { useNavigation } from "@react-navigation/native";
@@ -23,9 +23,8 @@ const Tab = styled.Text`
   color: #fff;
 `;
 
-const HeaderTabs = () => {
+const HeaderTabs = ({user}) => {
   const navigation = useNavigation();
-
   return (
     <Container>
       <TouchableOpacity activeOpacity={0.5}>
@@ -37,7 +36,7 @@ const HeaderTabs = () => {
       <TouchableOpacity
         activeOpacity={0.5}
         onPress={() => {
-          // navigation.navigate("Login");
+          navigation.navigate("MyList",{user:user})
         }}
       >
         <Tab>My List</Tab>

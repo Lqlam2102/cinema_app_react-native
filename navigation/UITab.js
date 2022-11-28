@@ -23,7 +23,8 @@ const screenOptions = ({route})=>({
   headerShown: false,
 })
 
-const UITab = (props) => {
+const UITab = ({route}) => {
+  const user = route.params.user;
   return (
     <Tab.Navigator
       screenOptions={screenOptions}>
@@ -35,6 +36,7 @@ const UITab = (props) => {
             IconHome(color)
           ),
         }}
+        initialParams={{user: user}}
       />
       <Tab.Screen
         name="Coming Soon"
@@ -44,6 +46,7 @@ const UITab = (props) => {
             IconVideo(color)
           ),
         }}
+        initialParams={{user: user}}
       />
       <Tab.Screen
         name="Downloads"
@@ -53,6 +56,7 @@ const UITab = (props) => {
             IconDownload(color)
           ),
         }}
+        initialParams={{user: user}}
       />
     </Tab.Navigator>
   );

@@ -1,16 +1,17 @@
 /* eslint-disable prettier/prettier */
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable no-unused-vars */
-/* eslint-disable quotes */
-/* eslint-disable eol-last */
+
 import React, {useState, useEffect} from 'react';
 import Video from 'react-native-video';
 import {
   View,
   StyleSheet,
-  Dimensions,
   TouchableOpacity,
   Text,
+  useWindowDimensions,
+  AppState,
 } from 'react-native';
 import ProgressBar from '../components/ProgressBar';
 import PlayerControls from '../components/PlayerControls';
@@ -23,21 +24,20 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import {useRef} from 'react';
 import Slider from '@react-native-community/slider';
 import ModalChoiceSpeed from '../components/ModalChoiceSpeed';
+import { baseURL } from '../config/Apis';
+import ModalWatching from '../components/ModalWatching';
+import { useIsFocused } from '@react-navigation/native';
 
-// var height = Dimensions.get('window').height;
-// var width = Dimensions.get('window').width;
-
-const VideoPlayer = ({route}) => {
+const VideoPlayer = ({navigation,route}) => {
   const videoRef = React.createRef();
+  const isFocused = useIsFocused();
   const timeOut = useRef();
-  var height = Dimensions.get('window').height;
-  var width = Dimensions.get('window').width;
-  useEffect(() => {
-    Orientation.lockToLandscape();
-    return () => {
-      Orientation.unlockAllOrientations();
-    };
-  }, []);
+  let ref_time = useRef();
+  const appState = useRef(AppState.currentState);
+  const [loading, setLoading] = useState(true);
+  const [response,setResponse] = useState(null);
+  const [watching,setWatching] = useState(false);
+  const { height, width } = useWindowDimensions();
   const [currentTime, setCurrentTime] = useState(0);
   const [bright, setBright] = useState(10);
   const [speed, setSpeed] = useState(1);
@@ -48,6 +48,85 @@ const VideoPlayer = ({route}) => {
   const [mute, setMute] = useState(false);
   const [lock, setLock] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  useEffect(() => {
+    Orientation.lockToLandscape();
+    let rs;
+    fetch(`${baseURL}/time/movie/?q=${route.params?.slug}`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${route.params?.user}`,
+      },
+    })
+      .then(res => res.json())
+      .then(json => {
+        setResponse(json);
+        if (json.time > 0) {
+          setPlay(false);
+          setWatching(true);
+        }
+        rs = json;
+        setLoading(false);
+      })
+      .catch(error => {
+        setLoading(false);
+        console.log(error.message);
+      });
+      const subscription = AppState.addEventListener("change", nextAppState => {
+        if (
+          appState.current.match(/inactive|background/) &&
+          nextAppState === "active"
+        ) {
+          console.log("App has come to the foreground!");
+          setPlay(true);
+        }
+        else {
+          setPlay(false);
+          console.log("out");
+          if (rs, ref_time.current > 20){
+            fetch(`${baseURL}/time/${rs.id}/`, {
+              method: 'PATCH',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${route.params?.user}`,
+              },
+              body: JSON.stringify({
+                time: (ref_time.current - 10),
+              }),
+            })
+              .then(res => res.json())
+              .then(json => {
+              })
+              .catch(error => {
+                console.log(error.message);
+              });
+          }
+        }
+        appState.current = nextAppState;
+        console.log("AppState", appState.current);
+      });
+    return () => {
+      Orientation.unlockAllOrientations();
+      if (rs, ref_time.current > 20){
+        fetch(`${baseURL}/time/${rs.id}/`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${route.params?.user}`,
+          },
+          body: JSON.stringify({
+            time: (ref_time.current - 10),
+          }),
+        })
+          .then(res => res.json())
+          .then(json => {
+          })
+          .catch(error => {
+            console.log(error.message);
+          });
+      }
+      subscription.remove();
+    };
+  }, []);
   const handlePlayPause = () => {
     if (play) {
       setPlay(false);
@@ -100,6 +179,9 @@ const VideoPlayer = ({route}) => {
 
   const onProgress = data => {
     setCurrentTime(data.currentTime);
+    ref_time.current = data.currentTime;
+    // alert(ref_time.current)
+
   };
 
   const onSeek = data => {
@@ -111,10 +193,14 @@ const VideoPlayer = ({route}) => {
     setPlay(false);
     videoRef.current.seek(0);
   };
-
   return (
-    <View style={styles.fullscreenContainer}>
-      <TouchableOpacity activeOpacity={lock ? 1 : 0.9} onPress={handleControls}>
+    <View style={styles.fullscreenContainer}
+    >
+      {/* {timeWatch && (alert("aaa"))} */}
+      {/* <Text style = {{color:'white'}}>{mid2}</Text> */}
+      <TouchableOpacity activeOpacity={lock ? 1 : 0.9}
+      onPress={handleControls}
+      >
         <View
           style={{
             opacity: bright / 10,
@@ -123,6 +209,7 @@ const VideoPlayer = ({route}) => {
             ref={videoRef}
             source={{
               uri: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+              // uri : route.params?.uri,
             }}
             poster="https://vnuf.edu.vn/wp-content/uploads/2022/11/Nha-Giao-VN-2022_final.jpg"
             style={{
@@ -141,13 +228,26 @@ const VideoPlayer = ({route}) => {
             muted={mute}
             rate={speed}
             // playInBackground = {true}
+            // onStartShouldSetResponder = {()=> true}
+            // onResponderGrant = {(event)=>{
+            //   handleControls()
+            //   setMid(event.nativeEvent.locationX);
+            // }}
+            // onResponderMove = {(event)=>{
+            //   if(currentTime >= 0 && currentTime <= duration){
+            //     setMid2(((event.nativeEvent.locationX - mid) * duration) / (width * 2));
+            //   }
+            // }}
+            // onResponderRelease ={()=>{
+            //   onSeek({seekTime: currentTime + mid2});
+            // }}
           />
 
           {showControl && !lock && (
             <View style={styles.controlOverlay}>
               <TouchableOpacity
                 style={{marginLeft: 10, marginTop: 20}}
-                onPress={route.params.goBack}>
+                onPress={navigation.goBack}>
                 <AntDesign name="arrowleft" size={30} color="white" />
               </TouchableOpacity>
               <PlayerControls
@@ -263,6 +363,16 @@ const VideoPlayer = ({route}) => {
           setSpeed={setSpeed}
           setShowControl={setShowControl}
         />
+        {!loading &&
+        (<ModalWatching
+          modalVisible={watching}
+          setModalVisible={setWatching}
+          setShowControl={setShowControl}
+          setPlay= {setPlay}
+          time = {response.time}
+          onSlideCapture={onSeek}
+        />)
+        }
       </TouchableOpacity>
     </View>
   );
@@ -272,6 +382,8 @@ const styles = StyleSheet.create({
   fullscreenContainer: {
     flex: 1,
     backgroundColor: 'black',
+    // justifyContent:'center',
+    // alignItems: 'center',
     position: 'absolute',
     top: 0,
     left: 0,

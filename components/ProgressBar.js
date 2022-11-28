@@ -6,25 +6,26 @@
 
 import React, {useState} from 'react';
 import Slider from '@react-native-community/slider';
-import {View, Text, StyleSheet, Dimensions} from 'react-native';
+import {View, Text, StyleSheet, useWindowDimensions} from 'react-native';
+
+const getMinutesFromSeconds = time => {
+  const minutes = time >= 60 ? Math.floor(time / 60) : 0;
+  const seconds = Math.floor(time - minutes * 60);
+
+  return `${minutes >= 10 ? minutes : '0' + minutes}:${
+    seconds >= 10 ? seconds : '0' + seconds
+  }`;
+};
 
 const ProgressBar = props => {
   const {currentTime, duration, onSlideCapture, onSlideStart, onSlideComplete} =
     props;
-  var width = Dimensions.get('window').width;
+  const { height, width } = useWindowDimensions();
 
   const [showTime, setShowTime] = useState(false);
   const [timeShow, setTimeShow] = useState(0);
   const [positionTime, setPositionTime] = useState(0);
   const [widthSlider, setWidthSlider] = useState(0);
-  const getMinutesFromSeconds = time => {
-    const minutes = time >= 60 ? Math.floor(time / 60) : 0;
-    const seconds = Math.floor(time - minutes * 60);
-
-    return `${minutes >= 10 ? minutes : '0' + minutes}:${
-      seconds >= 10 ? seconds : '0' + seconds
-    }`;
-  };
   let position = getMinutesFromSeconds(currentTime);
   const fullDuration = getMinutesFromSeconds(duration);
 
@@ -44,7 +45,7 @@ const ProgressBar = props => {
 
   return (
     <>
-     {showTime && (
+     {showTime && duration > 0 && (
           <Text
             style={{
               position: 'absolute',
@@ -64,6 +65,7 @@ const ProgressBar = props => {
           minimumValue={0}
           maximumValue={duration}
           step={1}
+          hitSlop={{top: 100, bottom: 100, left: 100, right: 100}}
           onValueChange={handleOnSlide}
           onSlidingStart={handleOnStartSlide}
           onSlidingComplete={handleOnCompleteSlide}
@@ -118,4 +120,5 @@ const styles = StyleSheet.create({
   },
 });
 
+export {getMinutesFromSeconds};
 export default ProgressBar;

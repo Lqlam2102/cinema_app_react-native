@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
     width: 130,
   },
   buttonChoice: {
-    backgroundColor: "#ff474d",
+    backgroundColor: "#434242",
   },
   textStyle: {
     color: 'white',

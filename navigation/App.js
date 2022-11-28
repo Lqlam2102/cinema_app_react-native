@@ -14,6 +14,7 @@ import ViewMovie from './../screen/ViewMovie';
 import MovieFullScreen from '../screen/MovieFullScreen';
 import Orientation from 'react-native-orientation-locker';
 import VideoPlayer from '../screen/Test';
+import MyList from '../screen/MyList';
 
 const Stack = createNativeStackNavigator();
 const screenOptions = {
@@ -48,6 +49,7 @@ const App = props => {
         <Stack.Screen name="ViewMovie" component={ViewMovie} />
         {/* <Stack.Screen name="MovieFullScreen" component={MovieFullScreen} /> */}
         <Stack.Screen name="MovieFullScreen" component={VideoPlayer} />
+        <Stack.Screen name="MyList" component={MyList} />
         <Stack.Screen name="Splash" component={Splash} />
       </Stack.Navigator>
     </NavigationContainer>

@@ -8,7 +8,7 @@ import styled from 'styled-components/native';
 
 import Apis, {endpoints} from '../config/Apis';
 import {images} from '../constants';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Login = ({navigation}) => {
   const [username, setUsername] = useState('admin');
@@ -42,7 +42,9 @@ const Login = ({navigation}) => {
         // });
         // await AsyncStorage.setItem('@user', res.data.access_token);
         setLoading(false);
-        navigation.replace('UITab');
+        navigation.replace('UITab',{
+          user: res.data.access_token,
+        });
       } catch (err) {
         console.log(err.message);
         if (err.message === 'Network Error') {
