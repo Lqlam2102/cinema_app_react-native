@@ -2,7 +2,7 @@
 /* eslint-disable no-undef */
 /* eslint-disable prettier/prettier */
 import axios from 'axios';
-const baseURL = 'http://192.168.1.150:8000'
+const baseURL = 'http://192.168.0.104:8000'
 const endpoints = {
   'oauth2-info': '/oauth2-info/',
   'login': '/o/token/',

@@ -1,4 +1,5 @@
 /* eslint-disable prettier/prettier */
+/* eslint-disable dot-notation */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable no-unused-vars */
@@ -12,6 +13,7 @@ import {
   Text,
   useWindowDimensions,
   AppState,
+  StatusBar,
 } from 'react-native';
 import ProgressBar from '../components/ProgressBar';
 import PlayerControls from '../components/PlayerControls';
@@ -24,30 +26,36 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import {useRef} from 'react';
 import Slider from '@react-native-community/slider';
 import ModalChoiceSpeed from '../components/ModalChoiceSpeed';
-import { baseURL } from '../config/Apis';
+import {baseURL} from '../config/Apis';
 import ModalWatching from '../components/ModalWatching';
-import { useIsFocused } from '@react-navigation/native';
+import {useIsFocused} from '@react-navigation/native';
+import ModalChoiceChap from '../components/ModalChoiceChap';
 
-const VideoPlayer = ({navigation,route}) => {
+const VideoPlayer = ({navigation, route}) => {
   const videoRef = React.createRef();
   const isFocused = useIsFocused();
   const timeOut = useRef();
-  let ref_time = useRef();
+  let ref_chap = useRef(0);
+  let ref_time = useRef(0);
   const appState = useRef(AppState.currentState);
   const [loading, setLoading] = useState(true);
-  const [response,setResponse] = useState(null);
-  const [watching,setWatching] = useState(false);
-  const { height, width } = useWindowDimensions();
-  const [currentTime, setCurrentTime] = useState(0);
+  const [response, setResponse] = useState(null);
+  const [watching, setWatching] = useState(false);
+  const {height, width} = useWindowDimensions();
   const [bright, setBright] = useState(10);
   const [speed, setSpeed] = useState(1);
-  const [isSetBirght, setIsSetBirght] = useState(false);
+  const [isSetBright, setIsSetBright] = useState(false);
   const [duration, setDuration] = useState(0);
   const [play, setPlay] = useState(true);
   const [showControl, setShowControl] = useState(false);
   const [mute, setMute] = useState(false);
   const [lock, setLock] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [modalChap, setModalChap] = useState(false);
+  const [time, setTime] = useState({
+    time: 0,
+    chap: 0,
+  });
   useEffect(() => {
     Orientation.lockToLandscape();
     let rs;
@@ -71,42 +79,43 @@ const VideoPlayer = ({navigation,route}) => {
         setLoading(false);
         console.log(error.message);
       });
-      const subscription = AppState.addEventListener("change", nextAppState => {
-        if (
-          appState.current.match(/inactive|background/) &&
-          nextAppState === "active"
-        ) {
-          console.log("App has come to the foreground!");
-          setPlay(true);
-        }
-        else {
-          setPlay(false);
-          console.log("out");
-          if (rs, ref_time.current > 20){
-            fetch(`${baseURL}/time/${rs.id}/`, {
-              method: 'PATCH',
-              headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${route.params?.user}`,
-              },
-              body: JSON.stringify({
-                time: (ref_time.current - 10),
-              }),
+    const subscription = AppState.addEventListener('change', nextAppState => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === 'active'
+      ) {
+        console.log('App has come to the foreground!');
+        setPlay(true);
+      } else {
+        setPlay(false);
+        console.log('out');
+        if ((rs, ref_time.current > 20)) {
+          fetch(`${baseURL}/time/${rs.id}/`, {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${route.params?.user}`,
+            },
+            body: JSON.stringify({
+              time: ref_time.current,
+              chap: ref_chap.current,
+            }),
+          })
+            .then(res => res.json())
+            .then(json => {
+              console.log(json);
             })
-              .then(res => res.json())
-              .then(json => {
-              })
-              .catch(error => {
-                console.log(error.message);
-              });
-          }
+            .catch(error => {
+              console.log(error.message);
+            });
         }
-        appState.current = nextAppState;
-        console.log("AppState", appState.current);
-      });
+      }
+      appState.current = nextAppState;
+      console.log('AppState', appState.current);
+    });
     return () => {
       Orientation.unlockAllOrientations();
-      if (rs, ref_time.current > 20){
+      if ((rs, ref_time.current > 20)) {
         fetch(`${baseURL}/time/${rs.id}/`, {
           method: 'PATCH',
           headers: {
@@ -114,11 +123,13 @@ const VideoPlayer = ({navigation,route}) => {
             Authorization: `Bearer ${route.params?.user}`,
           },
           body: JSON.stringify({
-            time: (ref_time.current - 10),
+            time: ref_time.current,
+            chap: ref_chap.current,
           }),
         })
           .then(res => res.json())
           .then(json => {
+            console.log(json);
           })
           .catch(error => {
             console.log(error.message);
@@ -138,11 +149,11 @@ const VideoPlayer = ({navigation,route}) => {
   };
   const handleOnStartSlide = () => {
     setShowControl(false);
-    setIsSetBirght(true);
+    setIsSetBright(true);
   };
   const handleOnCompleteSlide = () => {
     setShowControl(true);
-    setIsSetBirght(false);
+    setIsSetBright(false);
   };
   const handlePlay = () => {
     setTimeout(() => setShowControl(false), 500);
@@ -150,13 +161,14 @@ const VideoPlayer = ({navigation,route}) => {
   };
 
   const skipBackward = () => {
-    videoRef.current.seek(currentTime - 10);
-    setCurrentTime(currentTime - 10);
+    videoRef.current.seek(time['time'] - 10);
+    setTime({...time, time: time['time'] - 10});
+    // setCurrentTime(currentTime - 10);
   };
 
   const skipForward = () => {
-    videoRef.current.seek(currentTime + 10);
-    setCurrentTime(currentTime + 10);
+    videoRef.current.seek(time['time'] + 10);
+    setTime({...time, time: time['time'] + 10});
   };
 
   const handleControls = () => {
@@ -174,19 +186,23 @@ const VideoPlayer = ({navigation,route}) => {
 
   const onLoadEnd = data => {
     setDuration(data.duration);
-    setCurrentTime(data.currentTime);
+    if (ref_time.current > 0) {
+      setTime({...time, time: ref_time.current});
+      onSeek({seekTime: ref_time.current});
+    } else {
+      setTime({...time, time: data.currentTime});
+    }
   };
 
   const onProgress = data => {
-    setCurrentTime(data.currentTime);
+    setTime({...time, time: data.currentTime});
     ref_time.current = data.currentTime;
     // alert(ref_time.current)
-
   };
 
   const onSeek = data => {
     videoRef.current.seek(data.seekTime);
-    setCurrentTime(data.seekTime);
+    setTime({...time, time: data.seekTime});
   };
 
   const onEnd = () => {
@@ -194,13 +210,12 @@ const VideoPlayer = ({navigation,route}) => {
     videoRef.current.seek(0);
   };
   return (
-    <View style={styles.fullscreenContainer}
-    >
+    <>
+    <StatusBar hidden = {true} />
+    <View style={styles.fullscreenContainer}>
       {/* {timeWatch && (alert("aaa"))} */}
       {/* <Text style = {{color:'white'}}>{mid2}</Text> */}
-      <TouchableOpacity activeOpacity={lock ? 1 : 0.9}
-      onPress={handleControls}
-      >
+      <TouchableOpacity activeOpacity={lock ? 1 : 0.9} onPress={handleControls}>
         <View
           style={{
             opacity: bright / 10,
@@ -208,8 +223,8 @@ const VideoPlayer = ({navigation,route}) => {
           <Video
             ref={videoRef}
             source={{
-              uri: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-              // uri : route.params?.uri,
+              // uri: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+              uri: route.params?.server_data[time['chap']].link_m3u8,
             }}
             poster="https://vnuf.edu.vn/wp-content/uploads/2022/11/Nha-Giao-VN-2022_final.jpg"
             style={{
@@ -259,7 +274,7 @@ const VideoPlayer = ({navigation,route}) => {
               />
 
               <ProgressBar
-                currentTime={currentTime}
+                currentTime={time['time']}
                 duration={duration > 0 ? duration : 0}
                 onSlideStart={handlePlayPause}
                 onSlideComplete={handlePlayPause}
@@ -294,6 +309,27 @@ const VideoPlayer = ({navigation,route}) => {
                   <MaterialIcons name="speed" size={20} color="white" />
                   <Text style={styles.textSpeed}>{speed}x</Text>
                 </TouchableOpacity>
+                {route.params?.server_data.length > 1 && (
+                  <TouchableOpacity
+                    onPress={() => {
+                      setModalChap(true);
+                    }}>
+                    <Ionicons
+                      name="layers-outline"
+                      style={{padding: 10}}
+                      size={20}
+                      color="white"
+                    />
+                    <Text
+                      style={{
+                        color: '#fff',
+                        fontSize: 10,
+                        marginTop: -10,
+                      }}>
+                      Chọn tập
+                    </Text>
+                  </TouchableOpacity>
+                )}
                 <TouchableOpacity
                   onPress={() => {
                     setLock(!lock);
@@ -308,7 +344,7 @@ const VideoPlayer = ({navigation,route}) => {
               </View>
             </View>
           )}
-          {(showControl || isSetBirght) && !lock && (
+          {(showControl || isSetBright) && !lock && (
             <View style={styles.brightContainer}>
               <Entypo
                 style={{
@@ -363,18 +399,34 @@ const VideoPlayer = ({navigation,route}) => {
           setSpeed={setSpeed}
           setShowControl={setShowControl}
         />
-        {!loading &&
-        (<ModalWatching
-          modalVisible={watching}
-          setModalVisible={setWatching}
+        {!loading && (
+          <ModalWatching
+            modalVisible={watching}
+            setModalVisible={setWatching}
+            setShowControl={setShowControl}
+            setPlay={setPlay}
+            response={response}
+            onSlideCapture={onSeek}
+            data={route.params?.server_data}
+            setChapCurrent={setTime}
+            ref_chap={ref_chap}
+            ref_time={ref_time}
+          />
+        )}
+        <ModalChoiceChap
+          modalVisible={modalChap}
+          setModalVisible={setModalChap}
           setShowControl={setShowControl}
-          setPlay= {setPlay}
-          time = {response.time}
+          setPlay={setPlay}
           onSlideCapture={onSeek}
-        />)
-        }
+          data={route.params?.server_data}
+          chapCurrent={time['chap']}
+          setChapCurrent={setTime}
+          ref_chap={ref_chap}
+        />
       </TouchableOpacity>
     </View>
+    </>
   );
 };
 

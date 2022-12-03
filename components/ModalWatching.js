@@ -3,22 +3,26 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable quotes */
 /* eslint-disable eol-last */
-import {
-  View,
-  StyleSheet,
-  Text,
-  Modal,
-  Alert,
-  Pressable,
-} from 'react-native';
-import React from 'react'
-import { getMinutesFromSeconds } from './ProgressBar';
+import {View, StyleSheet, Text, Modal, Alert, Pressable} from 'react-native';
+import React from 'react';
+import {getMinutesFromSeconds} from './ProgressBar';
 
-const ModalWatching = ({modalVisible, setModalVisible, setShowControl, time,setPlay,onSlideCapture}) => {
-  let time_m = getMinutesFromSeconds(time);
+const ModalWatching = ({
+  modalVisible,
+  setModalVisible,
+  setShowControl,
+  response,
+  setPlay,
+  onSlideCapture,
+  data,
+  setChapCurrent,
+  ref_chap,
+  ref_time,
+}) => {
+  let time_m = getMinutesFromSeconds(response?.time);
   return (
     <>
-     <Modal
+      <Modal
         animationType="slide"
         transparent={true}
         visible={modalVisible}
@@ -28,22 +32,28 @@ const ModalWatching = ({modalVisible, setModalVisible, setShowControl, time,setP
         }}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Text style={styles.modalText}>Hệ thống phát hiện bạn đang xem ở phút {time_m}</Text>
+            <Text style={styles.modalText}>
+              Hệ thống phát hiện bạn đang xem ở phút {time_m} {data.length > 1 && (`Tập ${response?.chap + 1}`)}
+            </Text>
             <Pressable
               style={styles.button}
               onPress={() => {
                 setPlay(true);
                 setModalVisible(!modalVisible);
-                }}>
+              }}>
               <Text style={styles.textStyle}>Xem lại từ đầu</Text>
             </Pressable>
             <Pressable
               style={styles.button}
               onPress={() => {
-                onSlideCapture({seekTime: time});
+                // setChapCurrent(response?.chap);
+                setChapCurrent((pre)=>({...pre,time: response?.time, chap: response?.chap}));
+                ref_chap.current = response?.chap;
+                ref_time.current = response?.time;
+                // onSlideCapture({seekTime: response?.time});
                 setPlay(true);
                 setModalVisible(!modalVisible);
-                }}>
+              }}>
               <Text style={styles.textStyle}>Tiếp tục xem</Text>
             </Pressable>
             {/* <Pressable
@@ -58,8 +68,8 @@ const ModalWatching = ({modalVisible, setModalVisible, setShowControl, time,setP
         </View>
       </Modal>
     </>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   centeredView: {
@@ -92,7 +102,7 @@ const styles = StyleSheet.create({
     width: 130,
   },
   buttonChoice: {
-    backgroundColor: "#434242",
+    backgroundColor: '#434242',
   },
   textStyle: {
     color: 'white',

@@ -11,10 +11,13 @@ import {Login, Register, Splash} from '../screen';
 import UITab from './UITab';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ViewMovie from './../screen/ViewMovie';
-import MovieFullScreen from '../screen/MovieFullScreen';
 import Orientation from 'react-native-orientation-locker';
-import VideoPlayer from '../screen/Test';
+import VideoPlayer from '../screen/MovieFullScreen';
 import MyList from '../screen/MyList';
+import Search from '../screen/Search';
+import { LogBox } from 'react-native';
+LogBox.ignoreLogs(['new NativeEventEmitter']); // Ignore log notification by message
+LogBox.ignoreAllLogs(); //Ignore all log notifications
 
 const Stack = createNativeStackNavigator();
 const screenOptions = {
@@ -47,10 +50,10 @@ const App = props => {
           }}
         />
         <Stack.Screen name="ViewMovie" component={ViewMovie} />
-        {/* <Stack.Screen name="MovieFullScreen" component={MovieFullScreen} /> */}
         <Stack.Screen name="MovieFullScreen" component={VideoPlayer} />
         <Stack.Screen name="MyList" component={MyList} />
-        <Stack.Screen name="Splash" component={Splash} />
+        <Stack.Screen name="Search" component={Search} />
+
       </Stack.Navigator>
     </NavigationContainer>
   );

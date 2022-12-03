@@ -85,7 +85,7 @@ const Header = ({ login, goBack, label }) => {
               <TouchableOpacity
                 activeOpacity={0.5}
                 onPress={() => {
-                //   navigation.navigate("Search");
+                  navigation.navigate("Search");
                 }}
               >
                 <MaterialIcons
@@ -99,7 +99,7 @@ const Header = ({ login, goBack, label }) => {
               <TouchableOpacity
                 activeOpacity={0.5}
                 onPress={() => {
-                  // navigation.navigate("Search");
+                  navigation.navigate("Search");
                 }}
               >
                 <MaterialIcons

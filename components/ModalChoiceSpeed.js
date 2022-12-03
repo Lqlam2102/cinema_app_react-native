@@ -146,4 +146,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ModalChoiceSpeed
+export default ModalChoiceSpeed;

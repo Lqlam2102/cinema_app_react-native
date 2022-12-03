@@ -33,6 +33,7 @@ const ViewMovie = ({navigation, route}) => {
   const [inList, setInList] = useState(false);
   const [movie, setMovie] = useState(null);
   const [response, setResponse] = useState(false);
+  const [like,setLike] = useState(false);
   const user = route.params?.user;
   const setInListHome = route.params?.setInList;
   useEffect(() => {
@@ -157,7 +158,8 @@ const ViewMovie = ({navigation, route}) => {
               activeOpacity={0.5}
               onPress={() => {
                 navigation.navigate('MovieFullScreen', {
-                  uri: movie.episodes[0].server_data[0].link_m3u8,
+                  server_data: movie.episodes[0].server_data,
+                  // movie.episodes[0].server_data
                   thumb_url: movie.movie.thumb_url,
                   slug: route.params.slug,
                   user: user,
@@ -212,13 +214,22 @@ const ViewMovie = ({navigation, route}) => {
               <ActionButtonLabel>My List</ActionButtonLabel>
             </ActionButton>
           )}
-          <ActionButton activeOpacity={0.5}>
-            <AntDesign
+          <ActionButton activeOpacity={0.5}
+          onPress = {()=>{
+            setLike(!like)
+          }}
+          >
+            {!like ? (<AntDesign
               name="like2"
               size={30}
               color="white"
               style={{marginBottom: 7}}
-            />
+            />): (<AntDesign
+              name="like1"
+              size={30}
+              color="white"
+              style={{marginBottom: 7}}
+            />)}
             <ActionButtonLabel>Rate</ActionButtonLabel>
           </ActionButton>
           <ActionButton activeOpacity={0.5} onPress={onShare}>
