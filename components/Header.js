@@ -63,12 +63,12 @@ const HeaderTitle = styled.Text`
 const HeaderLeftSide = styled.View`
   flex-direction: row;
 `;
-const Header = ({ login, goBack, label }) => {
+const Header = ({ user, goBack, label }) => {
     const navigation = useNavigation();
     const signOutUser = () => {
     };
     return (
-      login ? (
+      true ? (
         <Container>
           <HeaderLeftSide>
             {goBack ? (
@@ -99,7 +99,7 @@ const Header = ({ login, goBack, label }) => {
               <TouchableOpacity
                 activeOpacity={0.5}
                 onPress={() => {
-                  navigation.navigate("Search");
+                  navigation.navigate("Search",{user:user});
                 }}
               >
                 <MaterialIcons

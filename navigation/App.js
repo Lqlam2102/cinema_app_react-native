@@ -16,6 +16,7 @@ import VideoPlayer from '../screen/MovieFullScreen';
 import MyList from '../screen/MyList';
 import Search from '../screen/Search';
 import { LogBox } from 'react-native';
+import TVShow from '../screen/TVShow';
 LogBox.ignoreLogs(['new NativeEventEmitter']); // Ignore log notification by message
 LogBox.ignoreAllLogs(); //Ignore all log notifications
 
@@ -53,7 +54,7 @@ const App = props => {
         <Stack.Screen name="MovieFullScreen" component={VideoPlayer} />
         <Stack.Screen name="MyList" component={MyList} />
         <Stack.Screen name="Search" component={Search} />
-
+        <Stack.Screen name="TVShow" component={TVShow} />
       </Stack.Navigator>
     </NavigationContainer>
   );

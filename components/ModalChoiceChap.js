@@ -24,6 +24,7 @@ const ModalChoiceChap = ({
   data,
   setChapCurrent,
   ref_chap,
+  ref_time,
 }) => {
   return (
     <>
@@ -47,7 +48,8 @@ const ModalChoiceChap = ({
                     style={[styles.button, index === chapCurrent ? styles.buttonChoice : null]}
                     onPress={() => {
                       // setChapCurrent(index);
-                      setChapCurrent((pre)=>({...pre,chap: index}));
+                      setChapCurrent(({time: 0, chap: index}));
+                      ref_time.current = 0;
                       setPlay(true);
                       ref_chap.current = index;
                       setModalVisible(!modalVisible);

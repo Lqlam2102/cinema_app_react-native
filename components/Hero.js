@@ -80,7 +80,7 @@ const TextButtonPlay = styled.Text`
   padding-left: 5px;
 `;
 
-const Hero = ({user}) => {
+const Hero = ({user, refresh}) => {
   const navigation = useNavigation();
   const [inList, setInList] = useState(false);
   const [response, setResponse] = useState(false);
@@ -101,21 +101,27 @@ const Hero = ({user}) => {
           setResponse(json[0]);
           setInList(true);
         }
+        else{
+          setInList(false);
+        }
         setIsLoading(false);
       })
       .catch(error => {
         setIsLoading(false);
         console.log(error.message);
       });
-  }, [user]);
+  }, [user,refresh]);
   const setMyList = async () => {
     setInList(!inList);
     // const user = await AsyncStorage.getItem('@user');
     if (inList) {
       fetch(`${baseURL}/favorite/${response.id}/`, {
         method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${user}`,
+        },
       })
-        .then(res => res.json())
+        .then(res => res)
         .then(json => {})
         .catch(error => {
           console.log(error.message);
@@ -161,7 +167,7 @@ const Hero = ({user}) => {
           <Button activeOpacity={0.5} onPress={setMyList}>
             {/* <MaterialIcons name="format-list-bulleted" size={24} color="#fff" /> */}
             {isLoading ? (
-              <ActivityIndicator size="small" color="#0000ff" />
+              <ActivityIndicator size="small" color="#fff" />
             ) : (
               <Feather name="check" size={25} color="white" />
             )}
@@ -171,7 +177,7 @@ const Hero = ({user}) => {
         ) : (
           <Button activeOpacity={0.5} onPress={setMyList}>
             {isLoading ? (
-              <ActivityIndicator size="small" color="#0000ff" />
+              <ActivityIndicator size="small" color="#fff" />
             ) : (
               <Ionicons name="add-outline" size={24} color="white" />
             )}

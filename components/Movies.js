@@ -30,13 +30,13 @@ const MoviePoster = styled.Image`
   width: ${Math.round((Dimensions.get('window').width * 35) / 100)}px
   height: 200px;
 `;
-const Movies = ({label,item,user}) => {
+const Movies = ({label,movies,user}) => {
   const navigation = useNavigation();
   return (
     <Container>
       <Label>{label}</Label>
       <MovieScroll horizontal>
-        {item["items"].map((movie, id) => {
+        {movies?.items?.map((movie, id) => {
           return (
             <TouchableOpacity activeOpacity={0.5} key={id} onPress = {()=>{
               navigation.navigate("ViewMovie",{

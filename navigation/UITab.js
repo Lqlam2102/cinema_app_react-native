@@ -7,6 +7,8 @@ import { View } from 'react-native';
 import {IconHome, IconDownload, IconVideo} from '../constants/icons';
 //My screen
 import {Home, Login, Register} from '../screen';
+import ComingSoon from '../screen/ComingSoon';
+import Download from '../screen/Download';
 
 const Tab = createBottomTabNavigator();
 const screenOptions = ({route})=>({
@@ -40,7 +42,7 @@ const UITab = ({route}) => {
       />
       <Tab.Screen
         name="Coming Soon"
-        component={Home}
+        component={ComingSoon}
         options={{
           tabBarIcon: ({color}) => (
             IconVideo(color)
@@ -50,7 +52,7 @@ const UITab = ({route}) => {
       />
       <Tab.Screen
         name="Downloads"
-        component={Home}
+        component={Download}
         options={{
           tabBarIcon: ({color}) => (
             IconDownload(color)

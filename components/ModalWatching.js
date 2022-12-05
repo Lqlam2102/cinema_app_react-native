@@ -50,7 +50,9 @@ const ModalWatching = ({
                 setChapCurrent((pre)=>({...pre,time: response?.time, chap: response?.chap}));
                 ref_chap.current = response?.chap;
                 ref_time.current = response?.time;
-                // onSlideCapture({seekTime: response?.time});
+                if (ref_chap.current === 0){
+                  onSlideCapture({seekTime: response?.time});
+                }
                 setPlay(true);
                 setModalVisible(!modalVisible);
               }}>

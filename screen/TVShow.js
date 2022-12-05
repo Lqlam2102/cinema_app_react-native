@@ -20,7 +20,7 @@ const MovieScroll = styled.View`
   margin: 30px;
   margin-left: 10px;
   flex-wrap: wrap;
-  flex-direction: row;
+  flex-direction: column;
   width: 100%;
 `;
 
@@ -32,42 +32,46 @@ const MoviePoster = styled.Image`
 
 const MovieCard = styled.View`
   padding-right: 9px;
-`;
-
-const Warning = styled.Text`
-  color: #fff;
-  font-family: 'Montserrat_400Regular';
-  font-size: 23px;
-  text-align: center;
-`;
-
-const WarningButton = styled.TouchableOpacity`
-  background-color: #e7442e;
-  padding: 10px;
-  border-radius: 10px;
-  margin: 10px;
-`;
-
-const WarningButtonText = styled.Text`
-  color: white;
-  font-family: 'Montserrat_300Light';
-  font-size: 15px;
-`;
-
-const WarningWrapper = styled.View`
-  flex: 1;
-  justify-content: center;
+  flex-direction: row;
   align-items: center;
-  margin-top: 20px;
-  position: absolute;
-  z-index: 50;
-  top: 40%;
+  margin-bottom: 4px;
 `;
+
+const Description = styled.View`
+  padding-left: 10px;
+  width: 68%;
+`;
+const TextName = styled.Text`
+  font-size: 20px;
+  font-weight: bold;
+  color: #fff;
+  align-items:center;
+  width: 100%;
+`;
+const TextChap = styled.Text`
+  color: #fff;
+  font-size: 14px;
+  margin: 10px 0;
+`;
+const Badges = styled.Text`
+  font-size: 10px;
+  color: #fff;
+  padding: 0 8px;
+  margin-right: 5px;
+  border-radius: 10px;
+  text-align: center;
+  font-weight: bold;
+`;
+const Tags = styled.View`
+  flex-direction: row;
+`;
+
+
 const wait = (timeout) => {
   return new Promise(resolve => setTimeout(resolve, timeout));
 }
 
-const MyList = ({route}) => {
+const TVShow = ({route}) => {
   const [loading, setLoading] = useState(true);
   const [movies, setMovies] = useState([]);
   const user = route?.params?.user;
@@ -81,19 +85,20 @@ const MyList = ({route}) => {
   }, [refresh]);
 
   useEffect(() => {
-    // setLoading(true);
-    fetch(`${baseURL}/favorite/`, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${user}`,
+    setLoading(true);
+    fetch(
+      'https://ophim1.cc/_next/data/4Ty7510PdBWqP8sPF1ThI/danh-sach/tv-shows.json?slug=tv-shows',
+      {
+        method: 'GET',
       },
-    })
+    )
       .then(res => res.json())
       .then(json => {
-        setMovies(json);
+        setMovies(json?.pageProps?.data);
         setLoading(false);
       })
       .catch(error => {
+        alert('Tải dữ liệu thất bại');
         setLoading(false);
         console.log(error.message);
       });
@@ -109,25 +114,15 @@ const MyList = ({route}) => {
           backgroundColor="transparent"
           barStyle="light-content"
         />
-        {movies?.length === 0 && (
-          <WarningWrapper>
-            <Warning>Không có phim nào trong danh sách của bạn.</Warning>
-            <WarningButton
-              activeOpacity={0.5}
-              onPress={() => navigation.navigate('Home')}>
-              <WarningButtonText>Duyệt phim</WarningButtonText>
-            </WarningButton>
-          </WarningWrapper>
-        )}
         <Container refreshControl={
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
           />
         }>
-          <Header login={true} goBack={navigation.goBack} label="My List" />
+          <Header login={true} goBack={navigation.goBack} label="TV Show" />
           <MovieScroll>
-            {movies?.map((movie, item) => {
+            {movies?.items?.map((movie, item) => {
               return (
                 <TouchableOpacity
                   activeOpacity={0.5}
@@ -141,8 +136,16 @@ const MyList = ({route}) => {
                   <MovieCard>
                     <MoviePoster
                       resizeMode="cover"
-                      source={{uri: movie?.data?.movie?.thumb_url}}
+                      source={{uri: `http://img.ophim1.cc/uploads/movies/${movie?.thumb_url}`}}
                     />
+                    <Description>
+                      <TextName>{movie?.name}</TextName>
+                      <TextChap>{movie?.episode_current}</TextChap>
+                      <Tags>
+                      <Badges style = {{backgroundColor: '#6D67E4'}} >{movie?.year}</Badges>
+                      <Badges style = {{backgroundColor: '#453C67'}} >{movie?.country[0]?.name}</Badges>
+                      </Tags>
+                    </Description>
                   </MovieCard>
                 </TouchableOpacity>
               );
@@ -165,4 +168,4 @@ const MyList = ({route}) => {
   );
 };
 
-export default MyList;
+export default TVShow;

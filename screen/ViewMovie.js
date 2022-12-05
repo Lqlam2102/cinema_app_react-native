@@ -28,12 +28,12 @@ import {baseURL} from '../config/Apis';
 // import Video from 'react-native-video';
 
 const ViewMovie = ({navigation, route}) => {
-  const { height, width } = useWindowDimensions();
+  const {height, width} = useWindowDimensions();
   const [isLoading, setIsLoading] = useState(true);
   const [inList, setInList] = useState(false);
   const [movie, setMovie] = useState(null);
   const [response, setResponse] = useState(false);
-  const [like,setLike] = useState(false);
+  const [like, setLike] = useState(false);
   const user = route.params?.user;
   const setInListHome = route.params?.setInList;
   useEffect(() => {
@@ -166,7 +166,13 @@ const ViewMovie = ({navigation, route}) => {
                 });
               }}>
               <Ionicons name="ios-play" size={26} />
-              <TextButtonPlay>Play</TextButtonPlay>
+              <TextButtonPlay>
+                {movie.movie?.episode_current === 'Trailer'
+                  ? 'Phát Trailer'
+                  : movie.movie?.episode_current !== 'Full'
+                  ? 'Phát (Tập 1)'
+                  : 'Phát'}
+              </TextButtonPlay>
             </Play>
 
             <Download activeOpacity={0.5}>
@@ -180,7 +186,7 @@ const ViewMovie = ({navigation, route}) => {
           </ActionButtons>
           <ScrollView style={{height: height / 5}}>
             <MovieDescription>
-              {movie.movie?.content.replace('<p>', '').replace('</p>', '')}
+              {movie.movie?.content.replaceAll('<p>', '').replaceAll('</p>', '')}
             </MovieDescription>
             <Tags>
               {movie.movie?.category.map((tag, i) => {
@@ -214,22 +220,26 @@ const ViewMovie = ({navigation, route}) => {
               <ActionButtonLabel>My List</ActionButtonLabel>
             </ActionButton>
           )}
-          <ActionButton activeOpacity={0.5}
-          onPress = {()=>{
-            setLike(!like)
-          }}
-          >
-            {!like ? (<AntDesign
-              name="like2"
-              size={30}
-              color="white"
-              style={{marginBottom: 7}}
-            />): (<AntDesign
-              name="like1"
-              size={30}
-              color="white"
-              style={{marginBottom: 7}}
-            />)}
+          <ActionButton
+            activeOpacity={0.5}
+            onPress={() => {
+              setLike(!like);
+            }}>
+            {!like ? (
+              <AntDesign
+                name="like2"
+                size={30}
+                color="white"
+                style={{marginBottom: 7}}
+              />
+            ) : (
+              <AntDesign
+                name="like1"
+                size={30}
+                color="white"
+                style={{marginBottom: 7}}
+              />
+            )}
             <ActionButtonLabel>Rate</ActionButtonLabel>
           </ActionButton>
           <ActionButton activeOpacity={0.5} onPress={onShare}>

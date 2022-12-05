@@ -3,11 +3,11 @@
 /* eslint-disable quotes */
 /* eslint-disable eol-last */
 
-import React from "react";
-import {TouchableOpacity } from "react-native";
+import React from 'react';
+import {TouchableOpacity} from 'react-native';
 
-import styled from "styled-components/native";
-import { useNavigation } from "@react-navigation/native";
+import styled from 'styled-components/native';
+import {useNavigation} from '@react-navigation/native';
 
 const Container = styled.View`
   align-items: center;
@@ -27,7 +27,11 @@ const HeaderTabs = ({user}) => {
   const navigation = useNavigation();
   return (
     <Container>
-      <TouchableOpacity activeOpacity={0.5}>
+      <TouchableOpacity
+        activeOpacity={0.5}
+        onPress={() => {
+          navigation.navigate('TVShow', {user: user});
+        }}>
         <Tab>TV Shows</Tab>
       </TouchableOpacity>
       <TouchableOpacity activeOpacity={0.5}>
@@ -36,9 +40,8 @@ const HeaderTabs = ({user}) => {
       <TouchableOpacity
         activeOpacity={0.5}
         onPress={() => {
-          navigation.navigate("MyList",{user:user})
-        }}
-      >
+          navigation.navigate('MyList', {user: user});
+        }}>
         <Tab>My List</Tab>
       </TouchableOpacity>
     </Container>

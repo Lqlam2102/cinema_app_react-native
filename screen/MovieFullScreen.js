@@ -423,6 +423,7 @@ const VideoPlayer = ({navigation, route}) => {
           chapCurrent={time['chap']}
           setChapCurrent={setTime}
           ref_chap={ref_chap}
+          ref_time={ref_time}
         />
       </TouchableOpacity>
     </View>
