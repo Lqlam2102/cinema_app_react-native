@@ -60,6 +60,7 @@ const TopResultsText = styled.Text`
 const MoviePoster = styled.Image`
   width: ${Math.round((Dimensions.get('window').width * 27.5) / 100)}px;
   height: 200px;
+  background-color: 'white';
 `;
 
 const MovieCard = styled.View`
@@ -163,7 +164,7 @@ const Search = ({route}) => {
                       <MoviePoster
                         resizeMode="cover"
                         source={{
-                          uri: `http://img.ophim1.cc/uploads/movies/${movie?.thumb_url}`,
+                          uri: `https://img.ophim1.cc/uploads/movies/${movie?.thumb_url}`,
                         }}
                       />
                     </MovieCard>

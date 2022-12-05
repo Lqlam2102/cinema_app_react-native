@@ -136,7 +136,7 @@ const ViewMovie = ({navigation, route}) => {
           <TagEp>{movie.movie?.episode_current}</TagEp>
           <Image
             source={{
-              uri: movie.movie?.poster_url,
+              uri: movie.movie?.poster_url.replace('http:','https:'),
             }} // Can be a URL or a local file.
             // isMute = {false}
             // shouldPlay={true}
@@ -160,7 +160,7 @@ const ViewMovie = ({navigation, route}) => {
                 navigation.navigate('MovieFullScreen', {
                   server_data: movie.episodes[0].server_data,
                   // movie.episodes[0].server_data
-                  thumb_url: movie.movie.thumb_url,
+                  thumb_url: movie.movie.thumb_url.replace('http:','https:'),
                   slug: route.params.slug,
                   user: user,
                 });

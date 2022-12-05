@@ -38,10 +38,6 @@ const Home = ({navigation, route}) => {
   const [movies4, setMovies4] = useState([]);
 
   const [isLoading, setIsLoading] = useState(true);
-  const [isLoading2, setIsLoading2] = useState(true);
-  const [isLoading3, setIsLoading3] = useState(true);
-  const [isLoading4, setIsLoading4] = useState(true);
-
   const [refreshing, setRefreshing] = React.useState(false);
   const [refresh, setRefresh] = useState(false);
   const onRefresh = React.useCallback(() => {
@@ -52,69 +48,63 @@ const Home = ({navigation, route}) => {
   const user = route.params?.user;
   useEffect(() => {
     setIsLoading(true);
-    setIsLoading2(true);
-    setIsLoading3(true);
-    setIsLoading4(true);
     fetch('https://ophim1.com/danh-sach/phim-moi-cap-nhat?page=1', {
       method: 'GET',
     })
       .then(res => res.json())
       .then(json => {
         setMovies(json);
-        setIsLoading(false);
+        fetch(
+          'https://ophim1.cc/_next/data/4Ty7510PdBWqP8sPF1ThI/danh-sach/phim-le.json?slug=phim-le',
+          {
+            method: 'GET',
+          },
+        )
+          .then(res => res.json())
+          .then(json => {
+            setMovies2(json?.pageProps?.data);
+            fetch(
+              'https://ophim1.cc/_next/data/4Ty7510PdBWqP8sPF1ThI/danh-sach/phim-bo.json?slug=phim-bo',
+              {
+                method: 'GET',
+              },
+            )
+              .then(res => res.json())
+              .then(json => {
+                setMovies3(json?.pageProps?.data);
+                fetch(
+                  'https://ophim1.cc/_next/data/4Ty7510PdBWqP8sPF1ThI/danh-sach/hoat-hinh.json?slug=hoat-hinh',
+                  {
+                    method: 'GET',
+                    // agent: {rejectUnauthorized: false},
+                  },
+                )
+                  .then(res => res.json())
+                  .then(json => {
+                    setMovies4(json?.pageProps?.data);
+                    setIsLoading(false);
+                  })
+                  .catch(error => {
+                    setIsLoading(false);
+                    alert('Tải dữ liệu hoạt hình thất bại');
+                    console.log(error.message);
+                  });
+              })
+              .catch(error => {
+                setIsLoading(false);
+                alert('Tải dữ liệu phim bộ thất bại');
+                console.log(error.message);
+              });
+          })
+          .catch(error => {
+            setIsLoading(false);
+            alert('Tải dữ liệu phim lẻ thất bại');
+            console.log(error.message);
+          });
       })
       .catch(error => {
         setIsLoading(false);
         alert('Tải dữ liệu phim mới cập nhật thất bại');
-        console.log(error.message);
-      });
-    fetch(
-      'https://ophim1.cc/_next/data/4Ty7510PdBWqP8sPF1ThI/danh-sach/phim-le.json?slug=phim-le',
-      {
-        method: 'GET',
-      },
-    )
-      .then(res => res.json())
-      .then(json => {
-        setMovies2(json?.pageProps?.data);
-        setIsLoading2(false);
-      })
-      .catch(error => {
-        setIsLoading2(false);
-        alert('Tải dữ liệu phim lẻ thất bại');
-        console.log(error.message);
-      });
-    fetch(
-      'https://ophim1.cc/_next/data/4Ty7510PdBWqP8sPF1ThI/danh-sach/phim-bo.json?slug=phim-bo',
-      {
-        method: 'GET',
-      },
-    )
-      .then(res => res.json())
-      .then(json => {
-        setMovies3(json?.pageProps?.data);
-        setIsLoading3(false);
-      })
-      .catch(error => {
-        setIsLoading3(false);
-        alert('Tải dữ liệu phim bộ thất bại');
-        console.log(error.message);
-      });
-    fetch(
-      'https://ophim1.cc/_next/data/4Ty7510PdBWqP8sPF1ThI/danh-sach/hoat-hinh.json?slug=hoat-hinh',
-      {
-        method: 'GET',
-        // agent: {rejectUnauthorized: false},
-      },
-    )
-      .then(res => res.json())
-      .then(json => {
-        setMovies4(json?.pageProps?.data);
-        setIsLoading4(false);
-      })
-      .catch(error => {
-        setIsLoading3(false);
-        alert('Tải dữ liệu hoạt hình thất bại');
         console.log(error.message);
       });
   }, [refresh]);
@@ -169,9 +159,14 @@ const Home = ({navigation, route}) => {
         ) : (
             <ActivityIndicator style= {{marginTop:60}} size="large" color="#fff" />
         )} */}
-        <React.Fragment>
+
           {!isLoading ? (
-            <Movies label={'Mới cập nhật'} movies={movies} user={user} />
+            <React.Fragment>
+              <Movies label={'Mới cập nhật'} movies={movies} user={user} />
+              <Movies label={'Phim lẻ'} movies={movies2} user={user} />
+              <Movies label={'Phim bộ'} movies={movies3} user={user} />
+              <Movies label={'Phim hoạt hình'} movies={movies4} user={user} />
+            </React.Fragment>
           ) : (
             <ActivityIndicator
               style={{marginTop: 60}}
@@ -179,34 +174,6 @@ const Home = ({navigation, route}) => {
               color="#fff"
             />
           )}
-          {!isLoading2 ? (
-            <Movies label={'Phim lẻ'} movies={movies2} user={user} />
-          ) : (
-            <ActivityIndicator
-              style={{marginTop: 60}}
-              size="large"
-              color="#fff"
-            />
-          )}
-          {!isLoading3 ? (
-            <Movies label={'Phim bộ'} movies={movies3} user={user} />
-          ) : (
-            <ActivityIndicator
-              style={{marginTop: 60}}
-              size="large"
-              color="#fff"
-            />
-          )}
-          {!isLoading4 ? (
-            <Movies label={'Phim hoạt hình'} movies={movies4} user={user} />
-          ) : (
-            <ActivityIndicator
-              style={{marginTop: 60}}
-              size="large"
-              color="#fff"
-            />
-          )}
-        </React.Fragment>
       </Container>
     </>
   );

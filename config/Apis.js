@@ -2,7 +2,7 @@
 /* eslint-disable no-undef */
 /* eslint-disable prettier/prettier */
 import axios from 'axios';
-const baseURL = 'http://lqlam2102.pythonanywhere.com';
+const baseURL = 'https://lqlam2102.pythonanywhere.com';
 const endpoints = {
   'oauth2-info': '/oauth2-info/',
   'login': '/o/token/',

@@ -141,7 +141,7 @@ const MyList = ({route}) => {
                   <MovieCard>
                     <MoviePoster
                       resizeMode="cover"
-                      source={{uri: movie?.data?.movie?.thumb_url}}
+                      source={{uri: movie?.data?.movie?.thumb_url.replace('http:','https:')}}
                     />
                   </MovieCard>
                 </TouchableOpacity>

@@ -28,6 +28,7 @@ const MoviePoster = styled.Image`
   width: ${Math.round((Dimensions.get('window').width * 30) / 100)}px;
   height: 200px;
   border-radius: 10px;
+  background-color: 'white';
 `;
 
 const MovieCard = styled.View`
@@ -136,7 +137,8 @@ const TVShow = ({route}) => {
                   <MovieCard>
                     <MoviePoster
                       resizeMode="cover"
-                      source={{uri: `http://img.ophim1.cc/uploads/movies/${movie?.thumb_url}`}}
+                      source={{uri: `https://img.ophim1.cc/uploads/movies/${movie?.thumb_url}`}}
+                      // loadingIndicatorSource= {require("../assets/logo.png")}
                     />
                     <Description>
                       <TextName>{movie?.name}</TextName>
