@@ -1,3 +1,9 @@
+## 🚀 Introduce
+
+- Application make by React Native
+- [Backend](https://github.com/Lqlam2102/cinema_mobile_be) make by Django
+- Using authentication by [OAuth 2.0](https://django-oauth-toolkit.readthedocs.io/en/latest)
+
 # **Overview**
 
 ![Preview](https://github.com/Lqlam2102/cinema_app_react-native/blob/main/assets/iPiccy-img.png)
@@ -23,7 +29,7 @@ Download [Android .apk installer](https://drive.google.com/file/d/1Ak4jVJkfwVX7k
 - Clone repository and install dependencies:
 
 ```bash
-$ https://github.com/Lqlam2102/cinema_app_react-native.git
+$ git clone https://github.com/Lqlam2102/cinema_app_react-native.git
 $ cd CinemaApp
 $ npm i --force
 $ yarn global add react-native-cli
@@ -44,3 +50,8 @@ $ react-native run-ios
 
     - Username: admin
     - Password: admin
+
+## 📝 License
+
+Copyright © 2022 [Lqlam2102](https://github.com/Lqlam2102).<br />
+This project is [React Native](https://github.com/Lqlam2102/cinema_app_react-native) licensed.
