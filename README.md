@@ -22,17 +22,16 @@
 
 ## **Running the app**
 
-Download [Android .apk installer](https://drive.google.com/file/d/1Ak4jVJkfwVX7kcSdN79ukw6zMAc9byM3/view?usp=share_link)
+Download [Android .apk installer](https://drive.google.com/file/d/1DVlWkOAN_Lat4cSKtikZD53ebMw2nnsm/view?usp=sharing)
 
 ## **Installation**
-
 1. Clone the repo
    ```sh
-   git clone https://github.com/ManhTuongNguyen/eLearningApp.git
+   git clone https://github.com/Lqlam2102/cinema_app_react-native
    ```
 2. Move to the project
    ```
-   cd eLearningApp
+   cd cinema_app_react-native
    ```
 3. Install NPM packages
    ```sh
@@ -47,14 +46,7 @@ Download [Android .apk installer](https://drive.google.com/file/d/1Ak4jVJkfwVX7k
    ```sh
    npx react-native run-android
    ```
-**Or [Download file apk and install it](https://drive.google.com/file/d/1Ak4jVJkfwVX7kcSdN79ukw6zMAc9byM3/view?usp=share_link)**
-
-- Run application
-
-```bash
-$ react-native run-android
-$ react-native run-ios
-```
+**Or [Download file apk and install it](https://drive.google.com/file/d/1DVlWkOAN_Lat4cSKtikZD53ebMw2nnsm/view?usp=sharing)**
 
 ## **How to sign in app**
 
