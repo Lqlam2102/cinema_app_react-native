@@ -27,7 +27,7 @@ Download [Android .apk installer](https://drive.google.com/file/d/1DVlWkOAN_Lat4
 ## **Installation**
 1. Clone the repo
    ```sh
-   git clone https://github.com/Lqlam2102/cinema_app_react-native
+   git clone https://github.com/Lqlam2102/cinema_app_react-native.git
    ```
 2. Move to the project
    ```
