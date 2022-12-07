@@ -1,7 +1,7 @@
 ## 🚀 Introduce
 
-- Application make by React Native
-- [Backend](https://github.com/Lqlam2102/cinema_mobile_be) make by Django
+- Application make with React Native
+- [Backend](https://github.com/Lqlam2102/cinema_mobile_be) make with Django
 - Using authentication by [OAuth 2.0](https://django-oauth-toolkit.readthedocs.io/en/latest)
 
 # **Overview**
@@ -26,14 +26,28 @@ Download [Android .apk installer](https://drive.google.com/file/d/1Ak4jVJkfwVX7k
 
 ## **Installation**
 
-- Clone repository and install dependencies:
-
-```bash
-$ git clone https://github.com/Lqlam2102/cinema_app_react-native.git
-$ cd CinemaApp
-$ npm i --force
-$ yarn global add react-native-cli
-```
+1. Clone the repo
+   ```sh
+   git clone https://github.com/ManhTuongNguyen/eLearningApp.git
+   ```
+2. Move to the project
+   ```
+   cd eLearningApp
+   ```
+3. Install NPM packages
+   ```sh
+   npm i --force
+   ```
+4. Install react native cli
+   ```sh
+   yarn global add react-native-cli
+   ```
+5. Connect to android phone by cable and turn on debugging mode
+6. Run this command
+   ```sh
+   npx react-native run-android
+   ```
+**Or [Download file apk and install it](https://drive.google.com/file/d/1Ak4jVJkfwVX7kcSdN79ukw6zMAc9byM3/view?usp=share_link)**
 
 - Run application
 
