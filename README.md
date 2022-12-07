@@ -22,7 +22,7 @@
 
 ## **Running the app**
 
-Download [Android .apk installer](https://drive.google.com/file/d/1DVlWkOAN_Lat4cSKtikZD53ebMw2nnsm/view?usp=sharing)
+Download [Android .apk installer](https://drive.google.com/file/d/1Ak4jVJkfwVX7kcSdN79ukw6zMAc9byM3/view?usp=share_link)
 
 ## **Installation**
 1. Clone the repo
@@ -46,7 +46,7 @@ Download [Android .apk installer](https://drive.google.com/file/d/1DVlWkOAN_Lat4
    ```sh
    npx react-native run-android
    ```
-**Or [Download file apk and install it](https://drive.google.com/file/d/1DVlWkOAN_Lat4cSKtikZD53ebMw2nnsm/view?usp=sharing)**
+**Or [Download file apk and install it](https://drive.google.com/file/d/1Ak4jVJkfwVX7kcSdN79ukw6zMAc9byM3/view?usp=share_link)**
 
 ## **How to sign in app**
 
